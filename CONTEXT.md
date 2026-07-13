@@ -1,4 +1,4 @@
-# Idea Vault
+  # Idea Vault
 
 A MERN stack app where users post ideas publicly and the community votes them good or bad.
 
