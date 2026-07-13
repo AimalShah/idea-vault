@@ -8,7 +8,7 @@ process.env.JWT_SECRET = "test-secret";
 import app from "../app.js";
 import User from "./user.model.js";
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/idea-vault-test";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/idea-vault-test-auth";
 
 before(async () => {
   await mongoose.connect(MONGO_URI);

@@ -30,7 +30,7 @@ export default function IdeaDetail() {
   const fetchComments = async () => {
     try {
       const res = await axios.get(`/api/ideas/${id}/comments`);
-      setComments(res.body.comments);
+      setComments(res.data.comments);
     } catch (err) {
       console.error("Failed to fetch comments:", err);
     }

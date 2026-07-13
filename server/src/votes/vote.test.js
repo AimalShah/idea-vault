@@ -10,7 +10,7 @@ import User from "../auth/user.model.js";
 import Idea from "../ideas/idea.model.js";
 import Vote from "./vote.model.js";
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/idea-vault-test";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/idea-vault-test-votes";
 let token;
 let otherToken;
 let ideaId;

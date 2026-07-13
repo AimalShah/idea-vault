@@ -10,13 +10,14 @@ import User from "../auth/user.model.js";
 import Idea from "../ideas/idea.model.js";
 import Comment from "./comment.model.js";
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/idea-vault-test";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/idea-vault-test-comments";
 let token;
 let otherToken;
 let ideaId;
 
 before(async () => {
   await mongoose.connect(MONGO_URI);
+  await User.deleteMany({});
   await Idea.deleteMany({});
   await Comment.deleteMany({});
 
@@ -38,6 +39,7 @@ before(async () => {
 });
 
 after(async () => {
+  await User.deleteMany({});
   await Idea.deleteMany({});
   await Comment.deleteMany({});
   await mongoose.connection.close();
