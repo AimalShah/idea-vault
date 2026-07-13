@@ -1,15 +1,16 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { Home, Lightbulb, PlusCircle, User, LogOut } from "lucide-react";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Home from "./pages/Home";
+import HomeFeed from "./pages/Home";
 import CreateIdea from "./pages/CreateIdea";
 import IdeaDetail from "./pages/IdeaDetail";
 import Profile from "./pages/Profile";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <div className="loading">Loading...</div>;
   return user ? children : <Navigate to="/login" />;
 }
 
@@ -17,63 +18,71 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <div className="app">
-          <header>
-            <h1><a href="/">Idea Vault</a></h1>
-            <Nav />
-          </header>
-          <main>
-            <Routes>
-              <Route path="/register" element={<Register />} />
-              <Route path="/login" element={<Login />} />
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <Home />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/ideas/new"
-                element={
-                  <ProtectedRoute>
-                    <CreateIdea />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/ideas/:id"
-                element={
-                  <ProtectedRoute>
-                    <IdeaDetail />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile/:id"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </main>
-        </div>
+        <AppLayout />
       </AuthProvider>
     </BrowserRouter>
   );
 }
 
-function Nav() {
-  const { user, logout } = useAuth();
-  if (!user) return null;
+function AppLayout() {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div className="loading">Loading...</div>;
+
   return (
-    <nav>
-      <a href={`/profile/${user.id}`} className="nav-link">{user.name}</a>
-      <button onClick={logout}>Logout</button>
-    </nav>
+    <div className="app">
+      {user && <Sidebar />}
+      <main className="main-content">
+        <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<ProtectedRoute><HomeFeed /></ProtectedRoute>} />
+          <Route path="/ideas/new" element={<ProtectedRoute><CreateIdea /></ProtectedRoute>} />
+          <Route path="/ideas/:id" element={<ProtectedRoute><IdeaDetail /></ProtectedRoute>} />
+          <Route path="/profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
+
+function Sidebar() {
+  const { user, logout } = useAuth();
+  const location = useLocation();
+
+  return (
+    <aside className="sidebar">
+      <div className="sidebar-logo">
+        <Link to="/">IdeaVault</Link>
+      </div>
+      <nav className="sidebar-nav">
+        <Link to="/" className={location.pathname === "/" ? "active" : ""}>
+          <Home size={24} />
+          <span>Home</span>
+        </Link>
+        <Link to="/ideas/new" className={location.pathname === "/ideas/new" ? "active" : ""}>
+          <PlusCircle size={24} />
+          <span>New Idea</span>
+        </Link>
+        <Link to={`/profile/${user?.id}`} className={location.pathname.startsWith("/profile") ? "active" : ""}>
+          <User size={24} />
+          <span>Profile</span>
+        </Link>
+        <button onClick={logout}>
+          <LogOut size={24} />
+          <span>Logout</span>
+        </button>
+      </nav>
+      <div className="sidebar-user" onClick={() => window.location.href = `/profile/${user?.id}`}>
+        <div className="sidebar-user-avatar">
+          {user?.name?.[0]?.toUpperCase()}
+        </div>
+        <div className="sidebar-user-info">
+          <div className="sidebar-user-name">{user?.name}</div>
+          <div className="sidebar-user-email">{user?.email}</div>
+        </div>
+      </div>
+    </aside>
   );
 }
 

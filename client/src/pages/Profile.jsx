@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { ThumbsUp, ThumbsDown, ArrowLeft } from "lucide-react";
 import axios from "axios";
 
 export default function Profile() {
@@ -8,27 +9,43 @@ export default function Profile() {
   const { user: currentUser } = useAuth();
   const [ideas, setIdeas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [profileUser, setProfileUser] = useState(null);
 
   useEffect(() => {
     axios
       .get(`/api/users/${id}/ideas`)
-      .then((res) => setIdeas(res.data.ideas))
+      .then((res) => {
+        setIdeas(res.data.ideas);
+        if (res.data.ideas.length > 0) {
+          setProfileUser(res.data.ideas[0].author);
+        } else {
+          setProfileUser({ name: currentUser?.name, _id: id });
+        }
+      })
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, currentUser]);
 
-  if (loading) return <p>Loading...</p>;
-
-  const profileUser = ideas[0]?.author || currentUser;
+  if (loading) return <div className="loading">Loading...</div>;
 
   return (
     <div className="profile-page">
-      <div className="profile-header">
+      <div className="main-header" style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <button onClick={() => window.history.back()} style={{ background: "none", border: "none", color: "#e7e9ea" }}>
+          <ArrowLeft size={20} />
+        </button>
         <h2>{profileUser?.name}</h2>
-        <p className="profile-count">{ideas.length} idea{ideas.length !== 1 ? "s" : ""}</p>
+      </div>
+
+      <div className="profile-header">
+        <div className="profile-avatar">{profileUser?.name?.[0]?.toUpperCase()}</div>
+        <div className="profile-name">{profileUser?.name}</div>
+        <div className="profile-stats">
+          <div><span>{ideas.length}</span> ideas</div>
+        </div>
       </div>
 
       {ideas.length === 0 ? (
-        <p>No ideas posted yet.</p>
+        <div className="empty-state">No ideas posted yet</div>
       ) : (
         <div className="idea-list">
           {ideas.map((idea) => (
@@ -38,8 +55,10 @@ export default function Profile() {
                 <span className={`status-badge ${idea.status}`}>{idea.status}</span>
               </div>
               <div className="idea-card-footer">
-                <span className="score">
-                  {idea.score.good} good / {idea.score.bad} bad ({idea.score.percentage}%)
+                <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <ThumbsUp size={14} /> {idea.score.good}
+                  <span style={{ margin: "0 4px" }}>/</span>
+                  <ThumbsDown size={14} /> {idea.score.bad}
                 </span>
                 <span>{new Date(idea.createdAt).toLocaleDateString()}</span>
               </div>

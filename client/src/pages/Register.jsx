@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Lightbulb } from "lucide-react";
 
 export default function Register() {
   const { register } = useAuth();
@@ -21,34 +22,20 @@ export default function Register() {
 
   return (
     <div className="auth-page">
-      <h2>Register</h2>
-      {error && <p className="error">{error}</p>}
+      <div style={{ textAlign: "center", marginBottom: 32 }}>
+        <Lightbulb size={48} color="#1d9bf0" />
+      </div>
+      <h2>Create your account</h2>
+      <p className="subtitle">Join IdeaVault and start sharing ideas</p>
+      {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          required
-        />
-        <button type="submit">Register</button>
+        <input type="text" placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+        <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+        <input type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
+        <button type="submit">Create account</button>
       </form>
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
+      <p className="switch-link">
+        Already have an account? <Link to="/login">Sign in</Link>
       </p>
     </div>
   );
