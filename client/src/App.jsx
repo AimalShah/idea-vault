@@ -53,7 +53,7 @@ function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <Link to="/">IdeaVault</Link>
+        <Link to="/"><Lightbulb size={28} /> <span>IdeaVault</span></Link>
       </div>
       <nav className="sidebar-nav">
         <Link to="/" className={location.pathname === "/" ? "active" : ""}>

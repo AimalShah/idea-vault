@@ -44,10 +44,14 @@ a {
   padding: 12px;
 }
 
-.sidebar-logo {
+.sidebar-logo a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 20px;
   font-weight: 700;
-  padding: 8px 12px;
+  color: var(--fg);
+  text-decoration: none;
 }
 
 .sidebar-nav {
@@ -133,6 +137,8 @@ a {
   flex: 1;
   min-width: 0;
   max-width: 600px;
+  margin: 0 auto;
+  border-left: 1px solid var(--border);
   border-right: 1px solid var(--border);
 }
 
